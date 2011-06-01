@@ -1,5 +1,7 @@
 apache: http://forge.puppetlabs.com/puppetlabs/apache
+augeas: https://github.com/camptocamp/puppet-augeas
 common: https://labs.riseup.net/code/projects/module-common
 lsb:	https://labs.riseup.net/code/projects/module-lsb
+mysql:	https://github.com/duritong/puppet-mysql
 rvm: 	https://github.com/blt04/puppet-rvm
 sshd: 	https://github.com/duritong/puppet-sshd
