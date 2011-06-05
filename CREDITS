@@ -4,5 +4,6 @@ common: 	https://labs.riseup.net/code/projects/module-common
 lsb:		https://labs.riseup.net/code/projects/module-lsb
 mysql:		https://github.com/duritong/puppet-mysql
 postfix:	https://github.com/camptocamp/puppet-postfix.git
+rkhunter:	https://github.com/duritong/puppet-rkhunter.git
 rvm: 		https://github.com/blt04/puppet-rvm
 sshd: 		https://github.com/duritong/puppet-sshd
