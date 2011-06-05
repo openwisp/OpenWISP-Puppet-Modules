@@ -204,6 +204,7 @@ class mysql::server {
     unless      => "test -f /root/.my.cnf",
     command     => "mysqladmin -u${mysql_user} password ${mysql_password}",
     notify      => Exec["Generate my.cnf"],
+    path	=> "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
     require     => [Package["mysql-server"], Service["mysql"]]
   }
 
