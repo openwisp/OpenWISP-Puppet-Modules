@@ -14,7 +14,13 @@ class postfix::server($static_conf = true) {
   }
 
   file { "/etc/aliases":
-    source => [ "puppet:///files/postfix/${fqdn}/aliases" ],
+    source => [ "puppet:///files/postfix/${fqdn}/aliases",
+                "puppet:///files/postfix/${operatingsystem}/${lsbdistcodename}/aliases",
+                "puppet:///files/postfix/${operatingsystem}/aliases",
+                "puppet:///files/postfix/aliases",
+                "puppet:///modules/postfix/${operatingsystem}/${lsbdistcodename}/aliases",
+                "puppet:///modules/postfix/${operatingsystem}/aliases",
+                "puppet:///modules/postfix/aliases" ],
     notify => Exec["set-aliases"],
     require => Package["postfix"],
     mode => 0400, owner => root, group => root;
