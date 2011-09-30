@@ -1,3 +1,4 @@
+<% require 'ipaddr' %>
 # See /usr/share/postfix/main.cf.dist for a commented, more complete version
 
 # Debian specific:  Specifying a file name will cause the first
@@ -32,7 +33,7 @@ alias_database = hash:/etc/aliases
 myorigin = /etc/mailname
 mydestination = <%= fqdn %>, <%= hostname %>, localhost.<%= domain %>, localhost
 relayhost = 
-mynetworks = <%= network %> 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
 mailbox_size_limit = 0
 recipient_delimiter = +
 inet_interfaces = all
