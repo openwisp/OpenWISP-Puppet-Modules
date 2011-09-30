@@ -1,8 +1,9 @@
 apache: 	http://forge.puppetlabs.com/puppetlabs/apache
 common: 	https://labs.riseup.net/code/projects/module-common
-lsb:		https://labs.riseup.net/code/projects/module-lsb
-mysql:  Me!
-postfix: Me!
+lsb:		  https://labs.riseup.net/code/projects/module-lsb
+network:  Me!
+mysql:    Me!
+postfix:  Me!
 rkhunter:	https://github.com/duritong/puppet-rkhunter.git
-rvm: 		https://github.com/blt04/puppet-rvm
+rvm: 		  https://github.com/blt04/puppet-rvm
 sshd: 		https://github.com/duritong/puppet-sshd
