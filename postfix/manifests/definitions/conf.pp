@@ -9,7 +9,7 @@ define static_conf {
 
 define dynamic_conf {
   file { "/etc/postfix/main.cf":
-    content => template("puppt:///templates/postfix/main.cf.erb"),
+    content => template("postfix/main.cf.erb"),
     notify => Exec["set-aliases"],
     require => Package["postfix"],
     mode => 0400, owner => root, group => root;
