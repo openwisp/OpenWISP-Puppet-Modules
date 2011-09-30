@@ -1,4 +1,4 @@
-class postfix::server($aliases_static) {
+class postfix::server($static_conf = true) {
   package { "postfix": ensure => installed }
 
   service { "postfix":
@@ -7,10 +7,17 @@ class postfix::server($aliases_static) {
     require => Package["postfix"]
   }
 
-  if $aliases_static {
-    aliases_static { 'load via file': }
+  if $static_conf {
+    static_conf { 'load via file': }
   } else {
-    aliases_dynamic { 'load via template': }
+    dynamic_conf { 'load via template': }
+  }
+
+  file { "/etc/aliases":
+    source => [ "puppet:///files/postfix/${fqdn}/aliases" ],
+    notify => Exec["set-aliases"],
+    require => Package["postfix"],
+    mode => 0400, owner => root, group => root;
   }
 
   exec { "set-aliases":

@@ -1,5 +1,5 @@
-define aliases_static {
-  file { "/etc/aliases":
+define static_conf {
+  file { "/etc/postfix/main.cf":
     source => [ "puppet:///files/postfix/${fqdn}/main.cf" ],
     notify => Exec["set-aliases"],
     require => Package["postfix"],
@@ -7,8 +7,8 @@ define aliases_static {
   }
 }
 
-define aliases_dynamic {
-  file { "/etc/aliases":
+define dynamic_conf {
+  file { "/etc/postfix/main.cf":
     content => template("puppt:///templates/postfix/main.cf"),
     notify => Exec["set-aliases"],
     require => Package["postfix"],
