@@ -4,6 +4,7 @@ lsb:		  https://labs.riseup.net/code/projects/module-lsb
 mysql:    Me!
 postfix:  Me!
 network:  Me!
+rsyncd:   Me!
 logging:  Me! (inspired from http://projects.puppetlabs.com/projects/1/wiki/Logrotate_Patterns)
 rkhunter:	https://github.com/duritong/puppet-rkhunter.git
 rvm: 		  https://github.com/blt04/puppet-rvm
