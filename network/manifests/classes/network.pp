@@ -4,14 +4,9 @@ class network {
 
   file { "/etc/network/interfaces":
     source => [ "puppet:///files/network/${fqdn}/interfaces" ],
-    require => [ Package["bridge-utils"], Package["vlan"], File["/etc/hostname"], File["/etc/resolv.conf"] ],
-    notify => [ Exec['set-hostname'], Exec['restart-ifaces'] ],
+    require => [ Package["bridge-utils"], Package["vlan"], File["/etc/resolv.conf"] ],
+    notify => [ Exec['restart-ifaces'] ],
     mode => 0644, owner => root, group => root;
-  }
-
-  file { "/etc/hostname":
-    content => "${hostname}",
-    mode    => 0644, owner => root, group => root;
   }
 
   file { "/etc/resolv.conf":
@@ -28,11 +23,6 @@ class network {
   exec { "restart-ifaces":
     command => "/etc/init.d/networking restart",
     require => [ Package["bridge-utils"], Package["vlan"] ],
-    refreshonly => true;
-  }
-
-  exec { "set-hostname":
-    command => "/etc/init.d/hostname restart",
     refreshonly => true;
   }
 }
