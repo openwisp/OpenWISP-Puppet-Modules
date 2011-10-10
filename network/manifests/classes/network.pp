@@ -5,7 +5,7 @@ class network {
   file { "/etc/network/interfaces":
     source => [ "puppet:///files/network/${fqdn}/interfaces" ],
     require => [ Package["bridge-utils"], Package["vlan"], File["/etc/hostname"], File["/etc/resolv.conf"] ],
-    notify => [ Exec['set-hostname'] Exec['restart-ifaces'] ],
+    notify => [ Exec['set-hostname'], Exec['restart-ifaces'] ],
     mode => 0644, owner => root, group => root;
   }
 
