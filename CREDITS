@@ -3,6 +3,7 @@ common: 	    https://labs.riseup.net/code/projects/module-common
 lsb:		      https://labs.riseup.net/code/projects/module-lsb
 mysql:        Me!
 postfix:      Me!
+rails:        Me!
 network:      Me!
 rsyncd:       Me!
 freeradius:   Me!
