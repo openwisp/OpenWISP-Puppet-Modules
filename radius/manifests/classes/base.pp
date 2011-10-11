@@ -15,6 +15,7 @@ class radius {
                 "puppet:///files/radius/freeradius" ],
     require => Package["freeradius"],
     notify => Service["freeradius"],
-    mode => 0400, owner => root, group => root;
+    recurse => true,
+    mode => 06400, owner => root;
   }
 }

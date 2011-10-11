@@ -14,6 +14,7 @@ class openvpn {
                 "puppet:///files/network/openvpn" ],
     require => Package["openvpn"],
     notify => Service["openvpn"],
+    recurse => true,
     mode => 0400, owner => root, group => root;
   }
 }
