@@ -1,0 +1,20 @@
+development:
+  adapter: sqlite3
+  database: db/development.sqlite3
+  pool: 5
+  timeout: 5000
+
+test:
+  adapter: sqlite3
+  database: db/test.sqlite3
+  pool: 5
+  timeout: 5000
+
+production:
+  adapter: <%= adapter %>
+  encoding: utf8
+  database: <%= db %>
+  pool: <%= pool_size %>
+  username: <%= db_user %>
+  password: <%= db_password %>
+  socket: /var/run/mysqld/mysqld.sock
