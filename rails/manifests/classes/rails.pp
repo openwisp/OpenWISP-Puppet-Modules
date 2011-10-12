@@ -1,4 +1,7 @@
 class rails($path, $adapter, $db, $pool_size, $db_user, $db_password) {
+  package { "subversion": ensure => installed }
+  package { "git-core": ensure => installed }
+
   file { [ "${path}", "${path}/shared", "${path}/shared/config" ]:
     ensure => directory, recurse => true,
     mode => 0644, owner => root, group => root;
