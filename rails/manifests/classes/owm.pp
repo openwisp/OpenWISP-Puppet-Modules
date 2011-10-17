@@ -1,5 +1,5 @@
 class owm($path = '/var/rails', $db_password, $pool_size = '10') {
-  class { rails:
+  rails { "${name} app":
       app_name => $name,
       path => $path,
       adapter => 'mysql',
@@ -9,7 +9,7 @@ class owm($path = '/var/rails', $db_password, $pool_size = '10') {
       db_password => $db_password
   }
 
-  file { "init_script":
+  file { "${name} init script":
     path =>"/etc/init.d/${name}-daemons",
     ensure => file, 
     content => template('rails/init_script.erb'),
@@ -19,6 +19,6 @@ class owm($path = '/var/rails', $db_password, $pool_size = '10') {
   service { "${name}-daemons":
     enable => true,
     ensure => running,
-    require => [ File["init_script"] ]
+    require => [ File["${name} init script"] ]
   }
 }

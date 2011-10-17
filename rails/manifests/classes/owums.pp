@@ -1,10 +1,10 @@
 class owums($path = '/var/rails', $db_password, $pool_size = '10') {
-  package { "dependencies":
+  package { "${name} dependencies":
     name => ["libmagickwand-dev", "lame", "festival", "festvox-italp16k", "festvox-rablpc16k", "librsvg2-bin"],
     ensure => installed
   }
 
-  class { rails:
+  rails { "${name} app":
       app_name => $name,
       path => $path,
       adapter => 'mysql',
@@ -14,7 +14,7 @@ class owums($path = '/var/rails', $db_password, $pool_size = '10') {
       db_password => $db_password
   }
 
-  file { "init_script":
+  file { "${name} init script":
     path =>"/etc/init.d/${name}-daemons",
     ensure => file, 
     content => template('rails/init_script.erb'),
@@ -24,6 +24,6 @@ class owums($path = '/var/rails', $db_password, $pool_size = '10') {
   service { "${name}-daemons":
     enable => true,
     ensure => running,
-    require => [ Package["dependencies"], File["init_script"] ]
+    require => [ Package["${name} dependencies"], File["${name} init script"] ]
   }
 }

@@ -1,5 +1,8 @@
 class mysql {
   case $operatingsystem {
-    default: { import 'classes/*.pp' }
+    default: { 
+      import 'defines/*.pp' 
+      import 'classes/*.pp' 
+    }
   }
 }
