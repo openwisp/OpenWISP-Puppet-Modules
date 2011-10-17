@@ -1,0 +1,89 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          <%= name %>-daemons
+# Required-Start:    $local_fs $network  
+# Required-Stop:     $local_fs $network 
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Starting <%= name %>-daemons
+# Description:       Starting <%= name %>-daemons
+### END INIT INFO#
+
+########## Variables for openwisp-daemons ##########
+
+# The directory in which all the various OpenWisp
+# applications are deployed. Generally it's /var/www
+# or /var/rails
+OPENWISP_BASE_PATH="<%= path %>"
+
+# The list of daemons you wish to start with this script
+# (they must be already been deployed of course).
+OPENWISP_APP="<%= name %>" 
+
+# The Rails environment in which the script must be run.
+# It will almost always be set to production.
+RAILS_ENV="production" 
+
+####################################################
+
+export PATH RAILS_ENV
+
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
+. /lib/lsb/init-functions
+
+bundle_exec() {
+  cd $1 && bundle exec $2
+  return $?
+}
+
+openwisp_daemons_start() {
+  bundle_exec $OPENWISP_BASE_PATH/$OPENWISP_APP 'rake daemons:start'
+}
+
+openwisp_daemons_stop() {
+  bundle_exec $OPENWISP_BASE_PATH/$OPENWISP_APP 'rake daemons:stop'
+}
+
+openwisp_daemons_restart() {
+  bundle_exec $OPENWISP_BASE_PATH/$OPENWISP_APP 'rake daemons:restart'
+}
+
+openwisp_daemons_status() {
+  bundle_exec $OPENWISP_BASE_PATH/$OPENWISP_APP 'rake daemons:status'
+}
+
+case "$1" in
+  start)
+    log_daemon_msg "Starting OpenWISP daemon" "$NAME" 
+    openwisp_daemons_start
+    RET="0" 
+    log_end_msg $RET
+    return $RET
+    ;;
+  stop)
+    log_daemon_msg "Stopping OpenWISP daemon" "$NAME" 
+    openwisp_daemons_stop
+    RET="0" 
+    log_end_msg $RET
+    return $RET
+    ;;
+  restart)
+    log_daemon_msg "Restarting OpenWISP daemon" "$NAME" 
+    openwisp_daemons_restart
+    RET="0" 
+    log_end_msg $RET
+    return $RET
+    ;;
+  status)
+    openwisp_daemons_status
+    RET="0" 
+    return $RET
+    ;;
+  *)
+    echo "Usage: /etc/init.d/$NAME {start|stop|restart|status}" >&2
+    exit 1
+    ;;
+esac
+
+exit 0
