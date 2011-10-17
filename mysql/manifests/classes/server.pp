@@ -1,7 +1,5 @@
 class mysql::server($password) {
-  package { "mysql-server": ensure   => installed }
-  package { "mysql-client": ensure => installed }
-  package { "libmysqlclient-dev": ensure => installed }
+  package { [ "mysql-server", "mysql-client", "libmysqlclient-dev" ]: ensure => installed }
 
   service { "mysql":
     enable => true,
@@ -10,9 +8,9 @@ class mysql::server($password) {
   }
 
   exec { "set-mysql-password":
-    unless => "mysqladmin -uroot -p$password status",
+    unless => "mysqladmin -uroot -p${password} status",
     path => ["/bin", "/usr/bin"],
-    command => "mysqladmin -uroot password $password",
+    command => "mysqladmin -uroot password ${password}",
     require => Service["mysql"]
   }
 }
