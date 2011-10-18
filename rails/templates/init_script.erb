@@ -16,9 +16,13 @@
 # or /var/rails
 OPENWISP_BASE_PATH="<%= path %>"
 
-# The list of daemons you wish to start with this script
-# (they must be already been deployed of course).
+# The daemon you wish to start with this script
+# (it must have already been deployed of course).
+<% if capistrano_enabled %>
+OPENWISP_APP="<%= name %>/current" 
+<% else %>
 OPENWISP_APP="<%= name %>" 
+<% end %>
 
 # The Rails environment in which the script must be run.
 # It will almost always be set to production.

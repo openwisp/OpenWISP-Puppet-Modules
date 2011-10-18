@@ -1,4 +1,4 @@
-class owums($path = '/var/rails', $db_password, $pool_size = '10') {
+class owums($path = '/var/rails', $db_password, $pool_size = '10', capistrano_enabled = true) {
   package { "${name} dependencies":
     name => ["libmagickwand-dev", "lame", "festival", "festvox-italp16k", "festvox-rablpc16k", "librsvg2-bin"],
     ensure => installed

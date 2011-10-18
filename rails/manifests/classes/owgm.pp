@@ -1,4 +1,4 @@
-class owgm($path = '/var/rails', $db_password, $pool_size = '10') {
+class owgm($path = '/var/rails', $db_password, $pool_size = '10', capistrano_enabled = true) {
   rails { "${name} app":
       app_name => $name,
       path => $path,
