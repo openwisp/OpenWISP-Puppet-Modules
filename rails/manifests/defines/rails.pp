@@ -10,13 +10,13 @@ define rails($app_name, $path, $adapter, $db, $pool_size, $db_user, $db_password
 
   if !defined(File[$path]) {
     file { $path:
-      ensure => directory, recurse => true,
+      ensure => directory, recurse => false,
       mode => 0644, owner => root, group => root;
     }
   }
 
   file { [ "${app_path}", "${app_path}/shared", "${app_path}/shared/config" ]:
-    ensure => directory, recurse => true,
+    ensure => directory, recurse => false,
     mode => 0644, owner => root, group => root,
     require => File[$path]
   }
