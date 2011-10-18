@@ -61,27 +61,27 @@ case "$1" in
   start)
     log_daemon_msg "Starting OpenWISP daemon" "$NAME" 
     openwisp_daemons_start
-    RET="0" 
+    RET="$?" 
     log_end_msg $RET
     return $RET
     ;;
   stop)
     log_daemon_msg "Stopping OpenWISP daemon" "$NAME" 
     openwisp_daemons_stop
-    RET="0" 
+    RET="$?" 
     log_end_msg $RET
     return $RET
     ;;
   restart)
     log_daemon_msg "Restarting OpenWISP daemon" "$NAME" 
     openwisp_daemons_restart
-    RET="0" 
+    RET="$?" 
     log_end_msg $RET
     return $RET
     ;;
   status)
     openwisp_daemons_status
-    RET="0" 
+    RET="$?" 
     return $RET
     ;;
   *)
