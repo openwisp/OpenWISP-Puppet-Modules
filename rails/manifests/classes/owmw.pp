@@ -14,6 +14,6 @@ class owmw($path = '/var/rails', $capistrano_enabled = true) {
                 "puppet:///modules/rails/${operatingsystem}/owmw_config.rb",
                 "puppet:///modules/rails/owmw_config.rb" ],
     require => Sinatra["${name} app"],
-    mode => 0600, owner => root, group => root;
+    mode => 0640, owner => root, group => www-data;
   }
 }
