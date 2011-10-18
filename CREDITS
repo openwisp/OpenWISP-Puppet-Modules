@@ -1,4 +1,4 @@
-apache2: 	    https://github.com/wesabe/puppet-apache2.git
+apache2: 	    https://github.com/wesabe/puppet-apache2 (with some hacks)
 common: 	    https://labs.riseup.net/code/projects/module-common
 lsb:		      https://labs.riseup.net/code/projects/module-lsb
 mysql:        Me!

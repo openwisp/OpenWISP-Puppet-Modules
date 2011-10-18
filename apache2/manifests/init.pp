@@ -99,17 +99,7 @@ class apache2 {
 		notify => Exec["reload-apache2"],
 	}
 
-	# Notify this when apache needs a reload. This is only needed when
-	# sites are added or removed, since a full restart then would be
-	# a waste of time. When the module-config changes, a force-reload is
-	# needed.
 	exec { "reload-apache2":
-		command => "/etc/init.d/apache2 reload",
-		refreshonly => true,
-		before => [ Service["apache2"], Exec["force-reload-apache2"] ]
-	}
-
-	exec { "force-reload-apache2":
 		command => "/etc/init.d/apache2 force-reload",
 		refreshonly => true,
 		before => Service["apache2"],
@@ -212,6 +202,7 @@ class apache2 {
       	  owner => root,
       	  group => root,
     	    ensure => present,
+			    notify => Exec["reload-apache2"],
     	    alias => "site-$name",
         }
       }
@@ -230,8 +221,7 @@ class apache2 {
 	  
 	  # now, enable it.
 		exec { "/usr/sbin/a2ensite $name":
-			onlyif => "/bin/sh -c '[ -L ${apache_sites}-enabled/$name ] \\
-						&& [ ${apache_sites}-enabled/$name -ef ${apache_sites}-available/$name ]'",
+      unless => [ "test -L ${apache_sites}-enabled/${name}", "[ ${apache_sites}-enabled/${name} -ef ${apache_sites}-available/${name} ]" ],
 			notify => Exec["reload-apache2"],
 			require => File["site-$name"],
 		}
@@ -263,16 +253,14 @@ class apache2 {
   	case $ensure {
   		'present' : {
   			exec { "/usr/sbin/a2enmod $name":
-  				onlyif => "/bin/sh -c '[ -L ${apache_mods}-enabled/${name}.load ] \\
-  					&& [ ${apache_mods}-enabled/${name}.load -ef ${apache_mods}-available/${name}.load ]'",
-  				notify => Exec["force-reload-apache2"],
+          unless => [ "test -L ${apache_mods}-enabled/${name}.load", "[ ${apache_mods}-enabled/${name}.load -ef ${apache_mods}-available/${name}.load ]" ],
+  				notify => Exec["reload-apache2"],
   			}
   		}
   		'absent': {
   			exec { "/usr/sbin/a2dismod $name":
-  				unless => "/bin/sh -c '[ -L ${apache_mods}-enabled/${name}.load ] \\
-  					&& [ ${apache_mods}-enabled/${name}.load -ef ${apache_mods}-available/${name}.load ]'",
-  				notify => Exec["force-reload-apache2"],
+          onlyif => [ "test -L ${apache_mods}-enabled/${name}.load", "[ ${apache_mods}-enabled/${name}.load -ef ${apache_mods}-available/${name}.load ]" ],
+  				notify => Exec["reload-apache2"],
   			}
   		}
   		default: { err ( "Unknown ensure value: '$ensure'" ) }
