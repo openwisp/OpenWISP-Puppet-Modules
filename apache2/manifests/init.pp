@@ -230,7 +230,7 @@ class apache2 {
 	  
 	  # now, enable it.
 		exec { "/usr/sbin/a2ensite $name":
-			unless => "/bin/sh -c '[ -L ${apache_sites}-enabled/$name ] \\
+			onlyif => "/bin/sh -c '[ -L ${apache_sites}-enabled/$name ] \\
 						&& [ ${apache_sites}-enabled/$name -ef ${apache_sites}-available/$name ]'",
 			notify => Exec["reload-apache2"],
 			require => File["site-$name"],
@@ -263,14 +263,14 @@ class apache2 {
   	case $ensure {
   		'present' : {
   			exec { "/usr/sbin/a2enmod $name":
-  				unless => "/bin/sh -c '[ -L ${apache_mods}-enabled/${name}.load ] \\
+  				onlyif => "/bin/sh -c '[ -L ${apache_mods}-enabled/${name}.load ] \\
   					&& [ ${apache_mods}-enabled/${name}.load -ef ${apache_mods}-available/${name}.load ]'",
   				notify => Exec["force-reload-apache2"],
   			}
   		}
   		'absent': {
   			exec { "/usr/sbin/a2dismod $name":
-  				onlyif => "/bin/sh -c '[ -L ${apache_mods}-enabled/${name}.load ] \\
+  				unless => "/bin/sh -c '[ -L ${apache_mods}-enabled/${name}.load ] \\
   					&& [ ${apache_mods}-enabled/${name}.load -ef ${apache_mods}-available/${name}.load ]'",
   				notify => Exec["force-reload-apache2"],
   			}
