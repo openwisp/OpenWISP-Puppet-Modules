@@ -1,6 +1,10 @@
-class owcpm($path = '/var/rails', $db_password, $pool_size = '10', capistrano_enabled = true) {
+class owcpm($repo, $release, $repo_user, $repo_pass, $path = '/var/rails', $db_password, $pool_size = '10') {
   rails { "${name} app":
       app_name => $name,
+      repo => $repo,
+      release => $release,
+      repo_user => $repo_user,
+      repo_pass => $repo_pass,
       path => $path,
       adapter => 'mysql',
       db => $name,
@@ -19,6 +23,14 @@ class owcpm($path = '/var/rails', $db_password, $pool_size = '10', capistrano_en
   service { "${name}-daemons":
     enable => true,
     ensure => running,
-    require => [ File["${name} init script"] ]
+    require => [ File["${name} init script"], Rails["${name} app"] ]
+  }
+
+  exec { "${name} db seed":
+    command => "rake db:seed && touch .seeds_run_by_puppet",
+    cwd => "${path}/${name}/current",
+    unless => "test -f ${path}/${name}/current/.seeds_run_by_puppet",
+    environment => ["RAILS_ENV=production"],
+    require => [ Rails["${name} app"], Service["${name}-daemons"] ]
   }
 }
