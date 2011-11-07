@@ -14,6 +14,17 @@ define sinatra($app_name, $release, $repo, $repo_user, $repo_pass, $path) {
     require => File[$path]
   }
 
+  file { [ "${app_path}/shared/log" ]:
+    ensure => directory, recurse => false, 
+    mode => 0664, owner => root, group => www-data,
+    require => File[$app_path]
+  }
+
+  file { [ "${app_path}/shared/log/sinatra.log" ]:
+    mode => 0664, owner => root, group => www-data,
+    require => File["${app_path}/shared/log"]
+  }
+
   exec { "${app_name} initial export":
     command => "svn export --no-auth-cache --username \"${repo_user}\" --password \"${repo_pass}\" ${repo}/tags/${release} ${app_path}/releases/${release}",
     require => File["${app_path}/releases"],

@@ -21,6 +21,17 @@ define rails($app_name, $release, $repo, $repo_user = "", $repo_pass = "", $path
     require => File[$path]
   }
 
+  file { [ "${app_path}/shared/log" ]:
+    ensure => directory, recurse => false, 
+    mode => 0664, owner => root, group => www-data,
+    require => File[$app_path]
+  }
+
+  file { [ "${app_path}/shared/log/production.log" ]:
+    mode => 0664, owner => root, group => www-data,
+    require => File["${app_path}/shared/log"]
+  }
+
   exec { "${app_name} initial export":
     command => "svn export --no-auth-cache --username \"${repo_user}\" --password \"${repo_pass}\" ${repo}/tags/${release} ${app_path}/releases/${release}",
     require => File["${app_path}/releases"],
@@ -38,6 +49,17 @@ define rails($app_name, $release, $repo, $repo_user = "", $repo_pass = "", $path
     ensure => symlink,
     target => "${app_path}/shared/config/database.yml",
     require => [ Exec["${app_name} initial export"], File["${app_path}/shared/config/database.yml"] ]
+  }
+
+  exec { "${app_name} clean logs":
+    command => "rm -rf ${app_path}/releases/${release}/log",
+    require => [ Exec["${app_name} initial export"] ]
+  }
+
+  file { "${app_path}/current/log":
+    ensure => symlink,
+    target => "${app_path}/shared/log",
+    require => [ Exec["${app_name} initial export"], Exec["${app_name} clean logs"] ]
   }
 
   file { "${app_path}/current":
