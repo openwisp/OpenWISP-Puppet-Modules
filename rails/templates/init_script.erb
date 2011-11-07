@@ -64,7 +64,11 @@ case "$1" in
   stop)
     log_daemon_msg "Stopping OpenWISP daemon" "$NAME" 
     openwisp_daemons_stop
-    RET="$?" 
+    if [ $? -eq 0 ]; then
+      RET="1"
+    else
+      RET="0"
+    fi
     log_end_msg $RET
     return $RET
     ;;
