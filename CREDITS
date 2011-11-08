@@ -7,7 +7,7 @@ rails:        Me!
 network:      Me!
 rsyncd:       Me!
 freeradius:   Me!
-logging:      Me! (inspired from http://projects.puppetlabs.com/projects/1/wiki/Logrotate_Patterns)
+logging:      Me!
 rkhunter:	    https://github.com/duritong/puppet-rkhunter.git
 rvm: 		      https://github.com/blt04/puppet-rvm
 sshd: 		    https://github.com/duritong/puppet-sshd
