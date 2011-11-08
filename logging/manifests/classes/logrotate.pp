@@ -1,21 +1,13 @@
-class logrotate($name = "NONE", $log = "NONE", $options = [], $postrotate = "NONE") {
-  # $options should be an array containing 1 or more logrotate directives (e.g. missingok, compress)
-
+class logrotate {
   package { "logrotate": ensure => installed }
 
   file { "/etc/logrotate.d":
-    ensure => directory,
-    owner => root, group => root, mode => 755,
+    source => [ "puppet:///files/logging/${fqdn}/logrotate",
+                "puppet:///files/logging/${operatingsystem}/${lsbdistcodename}/logrotate",
+                "puppet:///files/logging/${operatingsystem}/logrotate",
+                "puppet:///files/logging/logrotate" ],
     require => Package['logrotate'],
-  }
-
-  if ($name != "NONE" and $log != "NONE") {
-    file { "/etc/logrotate.d/${name}":
-      owner => root,
-      group => root,
-      mode => 644,
-      content => template("logging/logrotate.erb"),
-      require => File["/etc/logrotate.d"]
-    }
+    recurse => true,
+    owner => root, group => root, mode => 755
   }
 }
