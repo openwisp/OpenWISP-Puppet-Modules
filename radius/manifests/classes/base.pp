@@ -1,6 +1,7 @@
 class radius {
   package { "freeradius": ensure => installed }
   package { "freeradius-utils": ensure => installed }
+  package { "freeradius-mysql": ensure => installed }
 
   service { "freeradius":
     enable => true,

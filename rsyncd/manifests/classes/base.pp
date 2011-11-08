@@ -9,7 +9,7 @@ class rsyncd {
 
   exec { "enable-rsync": 
     command => "sed -ie 's/RSYNC_ENABLE=false/RSYNC_ENABLE=true/' /etc/default/rsync",
-    refreshonly => true
+    onlyif => "test -z `grep RSYNC_ENABLE=true /etc/default/rsync`"
   } 
 
   file { "/etc/rsyncd.conf":
