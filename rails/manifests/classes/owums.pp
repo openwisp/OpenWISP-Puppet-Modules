@@ -16,6 +16,19 @@ class owums($release, $repo, $path = '/var/rails', $db_password, $pool_size = '1
       db_password => $db_password
   }
 
+  file { "${path}/${name}/current/public/documents":
+    ensure => directory,
+    source => [ "puppet:///files/rails/${fqdn}/owums_documents/",
+                "puppet:///files/rails/${operatingsystem}/${lsbdistcodename}/owums_documents/",
+                "puppet:///files/rails/${operatingsystem}/owums_documents/",
+                "puppet:///files/rails/owums_documents/",
+                "puppet:///modules/rails/${operatingsystem}/${lsbdistcodename}/owums_documents/",
+                "puppet:///modules/rails/${operatingsystem}/owums_documents/",
+                "puppet:///modules/rails/owums_documents/" ],
+    require => Rails["${name} app"],
+    mode => 0640, owner => root, group => www-data;
+  }
+
   file { "${name} init script":
     path =>"/etc/init.d/${name}-daemons",
     ensure => file, 
@@ -26,7 +39,7 @@ class owums($release, $repo, $path = '/var/rails', $db_password, $pool_size = '1
   # If we are changing releases, we must stop daemons!
   exec { "${name}-daemons stopped":
     command => "/etc/init.d/${name}-daemons stop",
-    onlyif => "test -n \"echo \"${release}\" | grep `cat ${path}/${name}/current/VERSION`\"",
+    onlyif => "test -z \"echo \"${release}\" | grep `cat ${path}/${name}/current/VERSION`\"",
     require => [ File["${name} init script"] ],
     before => [ Rails["${name} app"], Service["${name}-daemons running"] ]
   }
