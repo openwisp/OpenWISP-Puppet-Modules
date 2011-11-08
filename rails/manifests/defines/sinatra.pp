@@ -21,6 +21,7 @@ define sinatra($app_name, $release, $repo, $repo_user, $repo_pass, $path) {
   }
 
   file { [ "${app_path}/shared/log/sinatra.log" ]:
+    ensure => present,
     mode => 0664, owner => root, group => www-data,
     require => File["${app_path}/shared/log"]
   }
