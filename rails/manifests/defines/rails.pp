@@ -53,6 +53,7 @@ define rails($app_name, $release, $repo, $repo_user = "", $repo_pass = "", $path
 
   exec { "${app_name} clean logs":
     command => "rm -rf ${app_path}/releases/${release}/log",
+    unless => "test -L ${app_path}/current/log",
     require => [ Exec["${app_name} initial export"] ]
   }
 
