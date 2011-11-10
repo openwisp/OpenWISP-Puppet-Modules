@@ -6,6 +6,7 @@ class radius {
   service { "freeradius":
     enable => true,
     ensure => running,
+    status => "lsof -u freerad",
     require => Package["freeradius"]
   }
 
