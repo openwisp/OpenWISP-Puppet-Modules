@@ -14,6 +14,6 @@ class zabbix_agent {
                 "puppet:///files/network/zabbix_agentd.conf" ],
     require => Package["zabbix-agent"],
     notify => Service["zabbix-agent"],
-    mode => 0640, owner => root, group => root;
+    mode => 0640, owner => root, group => zabbix;
   }
 }
