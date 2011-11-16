@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="it" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8"/>
+  <title><%= hostname.capitalize %> - CASPUR</title>
+  <link rel="stylesheet" href="assets/style.css" charset="utf-8"/>
+  <script type="text/javascript" src="assets/jquery.js"></script>
+  <script type="text/javascript" src="assets/jquery_url_parser.js"></script>
+  <script type="text/javascript" src="assets/utilities.js"></script>
+</head>
+<body>
+ <div id="container">
+   <div id="banner">
+  <div class="navcontainer">
+    
+     <h1>Benvenuto a <%= hostname.capitalize %></h1>
+     <h2>Il portale dimostrativo di accesso gratuito ad internet</h2>
+   
+  </div>
+</div>
+   &nbsp;
+   <div id="main">
+
+<!--
+ <div style="float:left;border-right:1px dotted gray;padding-right:50px;">
+-->
+ <div style="margin:0 auto;width:51%;border-right:1px dotted gray;border-left:1px dotted gray;padding-right:60px;padding-left:60px;">
+    <h4>Inserisci le tue credenziali per navigare!</h4>
+    <form method="post" action="https://<%= fqdn %>:8081/login" onSubmit="redirectOnSubmit('r', '#original_url')">
+  <input id="original_url" name="original_url" value="http://www.google.com" type="hidden" />
+  <table>
+    <tr><td><label for="username">Nome Utente:</label></td><td><input id="username" name="username" type="text"></td></tr>
+    <tr><td><label for="password">Password:</label></td><td><input id="password" name="password" type="password"></td></tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+      <td colspan="2">
+        <center><input name="commit" type="submit" value="Login"></center>
+      </td>
+    </tr>
+  </table>
+</form>
+    &nbsp;
+<p>
+  Hai dimenticato la password? <a href="https://<%= fqdn %>/owums/account/reset">Recuperala!</a>
+</p>
+&nbsp;
+<p>
+  Se non sei registrato, puoi registrarti <a href="https://<%= fqdn %>/owums/account/signup">qui</a>
+</p>
+&nbsp;
+<p>
+  Per gestire il tuo account, vai alla <a href="https://<%= fqdn %>/owums/account/login">pagina personale</a>
+</p>
+&nbsp;
+ </div>
+
+</div>
+   <div id="footer">
+ <div class="fotext">
+  Copyright (C) 2010 - <a href="http://www.caspur.it/">CASPUR</a> | 
+  Cambia lingua: 
+   <img src="assets/images/it.gif" alt="it" />
+  
+  <a href="index_en.html" onclick="redirectOnClick2('#change-locale')" id="change-locale">
+    <img src="assets/images/en.gif" alt="en" />
+  </a>
+ 
+ </div>
+</div>
+ </div>
+</body>
+</html>

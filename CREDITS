@@ -7,6 +7,7 @@ rails:        Me!
 network:      Me!
 rsyncd:       Me!
 freeradius:   Me!
+captivepages: Me!
 packages:     Me!
 logging:      Me!
 rkhunter:	    https://github.com/duritong/puppet-rkhunter.git
