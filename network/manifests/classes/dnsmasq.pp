@@ -13,6 +13,7 @@ class dnsmasq {
   } 
 
   file { "/etc/dnsmasq.d/":
+    ensure => directory, recurse => true,
     source => [ "puppet:///files/network/${fqdn}/dnsmasq",
                 "puppet:///files/network/${operatingsystem}/${lsbdistcodename}/dnsmasq",
                 "puppet:///files/network/${operatingsystem}/dnsmasq",
