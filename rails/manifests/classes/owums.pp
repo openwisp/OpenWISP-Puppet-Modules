@@ -17,7 +17,7 @@ class owums($release, $repo, $path = '/var/rails', $db_password, $pool_size = '1
   }
 
   file { "${path}/${name}/current/public/documents":
-    ensure => directory,
+    ensure => directory, recurse => true,
     source => [ "puppet:///files/rails/${fqdn}/owums_documents/",
                 "puppet:///files/rails/${operatingsystem}/${lsbdistcodename}/owums_documents/",
                 "puppet:///files/rails/${operatingsystem}/owums_documents/",
