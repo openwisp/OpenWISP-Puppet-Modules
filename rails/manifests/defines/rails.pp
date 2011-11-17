@@ -76,21 +76,24 @@ define rails($app_name, $release, $repo, $repo_user = "", $repo_pass = "", $path
     notify => Exec["reload-apache2"]
   }
 
-  exec { "${app_name} bundle":
-    command => "bundle install --deployment",
-    cwd => "${app_path}/current",
-    environment => ["RAILS_ENV=production"],
-    unless => "bundle check",
-    require => [ File["${app_path}/current"], Rvm_gem["bundler"] ]
-  }
-
   mysql::db { "${app_name} db": db_name => $db, user => $db_user, password => $db_password }
+  
+  if $rvm_installed == "true" {
+    exec { "${app_name} bundle":
+      command => "bundle install --deployment",
+      cwd => "${app_path}/current",
+      environment => ["RAILS_ENV=production"],
+      unless => "bundle check",
+      require => [ File["${app_path}/current"], Rvm_gem["bundler"] ]
+    }
 
-  exec { "${app_name} db migrate":
-    command => "bundle exec rake db:migrate",
-    cwd => "${app_path}/current",
-    unless => "bundle exec rake db:migrate:status | grep up",
-    environment => ["RAILS_ENV=production"],
-    require => [ Mysql::Db["${app_name} db"], File["${app_path}/current/config/database.yml"], Exec["${app_name} bundle"] ]
+    exec { "${app_name} db migrate":
+      command => "bundle exec rake db:migrate",
+      cwd => "${app_path}/current",
+      unless => "bundle exec rake db:migrate:status | grep up",
+      environment => ["RAILS_ENV=production"],
+      require => [ Mysql::Db["${app_name} db"], File["${app_path}/current/config/database.yml"], Exec["${app_name} bundle"] ]
+    }
   }
+
 }

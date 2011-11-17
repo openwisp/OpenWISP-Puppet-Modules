@@ -58,11 +58,13 @@ define sinatra($app_name, $release, $repo, $repo_user, $repo_pass, $path) {
     notify => Exec["reload-apache2"]
   }
 
-  exec { "${app_name} bundle":
-    command => "bundle install --deployment",
-    cwd => "${app_path}/current",
-    environment => ["RAILS_ENV=production"],
-    unless => "bundle check",
-    require => [ File["${app_path}/current"], Rvm_gem["bundler"] ]
+  if $rvm_installed == "true" {
+    exec { "${app_name} bundle":
+      command => "bundle install --deployment",
+      cwd => "${app_path}/current",
+      environment => ["RAILS_ENV=production"],
+      unless => "bundle check",
+      require => [ File["${app_path}/current"], Rvm_gem["bundler"] ]
+    }
   }
 }
