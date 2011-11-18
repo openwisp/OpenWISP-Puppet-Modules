@@ -20,6 +20,13 @@ class owcpm($repo, $release, $repo_user, $repo_pass, $path = '/var/rails', $db_p
     mode => 0751, owner => root, group => root;
   }
 
+  file { "${name} ios workaround":
+    ensure => directory, recurse => true,
+    path =>"/var/www/ios-workaround/",
+    source => "puppet:///modules/rails/ios-workaround",
+    mode => 0640, owner => root, group => www-data;
+  }
+
   # If we are changing releases, we must stop daemons!
   exec { "${name}-daemons stopped":
     command => "/etc/init.d/${name}-daemons stop",
