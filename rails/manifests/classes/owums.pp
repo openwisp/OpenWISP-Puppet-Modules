@@ -16,6 +16,11 @@ class owums($release, $repo, $path = '/var/rails', $db_password, $pool_size = '1
       db_password => $db_password
   }
 
+  file { "${path}/${name}/current/tmp/fleximage":
+    ensure => directory, require => Rails["${name} app"],
+    mode => 0770, owner => root, group => www-data;
+  }
+
   file { "${path}/${name}/current/public/documents":
     ensure => directory, recurse => true,
     source => [ "puppet:///files/rails/${fqdn}/owums_documents/",
