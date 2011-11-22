@@ -39,7 +39,8 @@ class owcpm($repo, $release, $repo_user, $repo_pass, $path = '/var/rails', $db_p
     name => "${name}-daemons",
     enable => true,
     ensure => running,
-    require => [ File["${name} init script"], Rails["${name} app"] ]
+    require => [ File["${name} init script"], Rails["${name} app"] ],
+    subscribe => File["/etc/iptables/rules"]
   }
 
   exec { "${name} db seed":
