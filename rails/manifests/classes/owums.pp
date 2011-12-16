@@ -44,9 +44,9 @@ class owums($release, $repo, $path = '/var/rails', $db_password, $pool_size = '1
   # If we are changing releases, we must stop daemons!
   exec { "${name}-daemons stopped":
     command => "/etc/init.d/${name}-daemons stop",
-    onlyif => "test -z \"echo \"${release}\" | grep `cat ${path}/${name}/current/VERSION`\"",
+    unless  => "echo '${release}' | grep `cat ${path}/${name}/current/VERSION`",
     require => [ File["${name} init script"] ],
-    before => [ Rails["${name} app"], Service["${name}-daemons running"] ]
+    before  => [ Rails["${name} app"], Service["${name}-daemons running"] ]
   }
 
   service { "${name}-daemons running":
