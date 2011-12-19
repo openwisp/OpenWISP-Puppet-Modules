@@ -1,4 +1,9 @@
 class owm($repo, $release, $path = '/var/rails', $db_password, $pool_size = '10') {
+  package { "${name} dependencies":
+    name   => ["libarchive-dev"],
+    ensure => installed
+  }
+
   rails { "${name} app":
       app_name => $name,
       repo => $repo,
@@ -9,6 +14,24 @@ class owm($repo, $release, $path = '/var/rails', $db_password, $pool_size = '10'
       pool_size => $pool_size,
       db_user => $name,
       db_password => $db_password
+  }
+
+  file { "${path}/${name}/shared/config/gmaps_api_key.yml":
+    ensure => file,
+    source => [ "puppet:///files/rails/${fqdn}/owm_google_maps_api_key.yml",
+                "puppet:///files/rails/${operatingsystem}/${lsbdistcodename}/owm_google_maps_api_key.yml",
+                "puppet:///files/rails/${operatingsystem}/owm_google_maps_api_key.yml",
+                "puppet:///files/rails/owm_google_maps_api_key.yml",
+                "puppet:///modules/rails/${operatingsystem}/${lsbdistcodename}/owm_google_maps_api_key.yml",
+                "puppet:///modules/rails/${operatingsystem}/owm_google_maps_api_key.yml",
+                "puppet:///modules/rails/owm_google_maps_api_key.yml" ],
+    mode => 0644, owner => root, group => root;
+  }
+
+  file { "${path}/${name}/current/config/gmaps_api_key.yml":
+    ensure  => symlink,
+    target  => "${path}/${name}/shared/config/gmaps_api_key.yml",
+    require => [ Exec["${name} initial export"], File["${path}/${name}/shared/config/gmaps_api_key.yml"] ]
   }
 
   file { "${name} init script":
