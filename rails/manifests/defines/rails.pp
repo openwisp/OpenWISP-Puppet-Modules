@@ -63,6 +63,12 @@ define rails($app_name, $release, $repo, $repo_user = "", $repo_pass = "", $path
     require => [ Exec["${app_name} initial export"], Exec["${app_name} clean logs"] ]
   }
 
+  file { [ "${app_path}/current/tmp/cache", "${app_path}/current/tmp/pids", "${app_path}/current/tmp/sessions", "${app_path}/current/tmp/sockets" ]:
+    ensure  => directory, recurse  => false,
+    mode    =>  0644, owner => root, group => root,
+    require => File[$app_path]
+  }
+
   file { "${app_path}/current":
     ensure => symlink,
     target => "${app_path}/releases/${release}",
