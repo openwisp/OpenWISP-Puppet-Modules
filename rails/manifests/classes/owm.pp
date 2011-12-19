@@ -16,6 +16,24 @@ class owm($repo, $release, $path = '/var/rails', $db_password, $pool_size = '10'
       db_password => $db_password
   }
 
+  file { [ "${path}/${name}/shared/private" ]:
+    ensure => directory,
+    mode => 0664, owner => root, group => www-data,
+    require => [ Rails["${name} app"] ]
+  }
+
+  exec { "${name} clean private":
+    command => "rm -rf ${path}/${name}/releases/${release}/private",
+    unless => "test -L ${path}/${name}/current/private",
+    require => [ Rails["${name} app"] ]
+  }
+
+  file { "${path}/${name}/current/private":
+    ensure => symlink,
+    target => "${path}/${name}/shared/private",
+    require => [ Exec["${name} clean private"] ]
+  }
+
   file { "${path}/${name}/shared/config/gmaps_api_key.yml":
     ensure => file,
     source => [ "puppet:///files/rails/${fqdn}/owm_google_maps_api_key.yml",
