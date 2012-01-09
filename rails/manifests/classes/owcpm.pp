@@ -1,4 +1,4 @@
-class owcpm($repo, $release, $repo_user, $repo_pass, $path = '/var/rails', $db_password, $pool_size = '10') {
+class owcpm($repo, $release, $repo_user, $repo_pass, $path = '/var/rails', $db_password, $pool_size = '10', $owmw_enabled = 'false', $owmw_url = '', $owmw_user = '', $owmw_password = '') {
   rails { "${name} app":
       app_name => $name,
       repo => $repo,
@@ -49,5 +49,20 @@ class owcpm($repo, $release, $repo_user, $repo_pass, $path = '/var/rails', $db_p
     unless => "test -f ${path}/${name}/releases/.seeds_run_by_puppet",
     environment => ["RAILS_ENV=production"],
     require => [ Rails["${name} app"], Service["${name}-daemons running"] ]
+  }
+
+  if $owmw_enabled == "true" {
+    file { "${name} owmw config":
+      path =>"${path}/${name}/shared/config/owmw.yml",
+      ensure => file,
+      content => template('rails/owmw.yml.erb'),
+      mode => 0644, owner => root, group => root
+    }
+
+    file { "${path}/${name}/current/config/owmw.yml":
+      ensure  => symlink,
+      target  => "${path}/${name}/shared/config/owmw.yml",
+      require => [ Exec["${name} initial export"], File["${path}/${name}/shared/config/owmw.yml"] ]
+    }
   }
 }
