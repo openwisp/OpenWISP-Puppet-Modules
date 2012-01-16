@@ -2,7 +2,7 @@ class captivepages($source = 'file') {
   if $source == 'file' {
     file { "/var/www/captivepages":
       ensure => directory, recurse => true,
-      mode => 0644, owner => root, group => root,
+      mode => 0655, owner => root, group => root,
       source => "puppet:///files/captivepages/${fqdn}"
     }
   }
