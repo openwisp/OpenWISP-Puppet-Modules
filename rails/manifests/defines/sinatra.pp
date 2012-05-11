@@ -1,4 +1,4 @@
-define sinatra($app_name, $release, $repo, $repo_user, $repo_pass, $path) {
+define sinatra($app_name, $release, $repo, $repo_type, $repo_user, $repo_pass, $path) {
   $app_path = "${path}/${app_name}"
 
   if !defined(File[$path]) {
@@ -26,11 +26,20 @@ define sinatra($app_name, $release, $repo, $repo_user, $repo_pass, $path) {
     require => File["${app_path}/shared/log"]
   }
 
-  exec { "${app_name} initial export":
-    command => "svn export --no-auth-cache --username \"${repo_user}\" --password \"${repo_pass}\" ${repo}/tags/${release} ${app_path}/releases/${release}",
-    require => File["${app_path}/releases"],
-    unless => "test -d ${app_path}/releases/${release}",
-    notify => Exec["reload-apache2"]
+  if $repo_type == "svn" {
+    exec { "${app_name} initial export":
+      command => "svn export --no-auth-cache --username \"${repo_user}\" --password \"${repo_pass}\" ${repo}/tags/${release} ${app_path}/releases/${release}",
+      require => File["${app_path}/releases"],
+      unless => "test -d ${app_path}/releases/${release}",
+      notify => Exec["reload-apache2"]
+    }
+  } elsif $repo_type == "git" {
+    exec { "${app_name} initial export":
+      command => "git clone ${repo} ${app_path}/releases/${release} && cd ${app_path}/releases/${release} && git checkout ${release} && rm -rf .git",
+      require => File["${app_path}/releases"],
+      unless => "test -d ${app_path}/releases/${release}",
+      notify => Exec["reload-apache2"]
+    }
   }
 
   exec { "${app_name} clean logs":

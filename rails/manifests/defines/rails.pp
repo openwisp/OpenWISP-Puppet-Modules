@@ -33,14 +33,14 @@ define rails($app_name, $release, $repo, $repo_type = "svn",  $repo_user = "", $
   }
 
   if $repo_type == "svn" {
-    exec { "${app_name} initial export via svn":
+    exec { "${app_name} initial export":
       command => "svn export --no-auth-cache --username \"${repo_user}\" --password \"${repo_pass}\" ${repo}/tags/${release} ${app_path}/releases/${release}",
       require => File["${app_path}/releases"],
       unless => "test -d ${app_path}/releases/${release}",
       notify => Exec["reload-apache2"]
     }
   } elsif $repo_type == "git" {
-    exec { "${app_name} initial export via git":
+    exec { "${app_name} initial export":
       command => "git clone ${repo} ${app_path}/releases/${release} && cd ${app_path}/releases/${release} && git checkout ${release} && rm -rf .git",
       require => File["${app_path}/releases"],
       unless => "test -d ${app_path}/releases/${release}",
