@@ -1,7 +1,8 @@
-class owmw($repo, $release, $repo_user, $repo_pass, $path = '/var/rails', $capistrano_enabled = true) {
+class owmw($repo, $repo_type = "svn", $release, $repo_user, $repo_pass, $path = '/var/rails', $capistrano_enabled = true) {
   sinatra { "${name} app":
       app_name => $name,
       repo => $repo,
+      repo_type => $repo_type,
       release => $release,
       repo_user => $repo_user,
       repo_pass => $repo_pass,

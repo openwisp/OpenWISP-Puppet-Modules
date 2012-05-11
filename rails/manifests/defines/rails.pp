@@ -1,4 +1,4 @@
-define rails($app_name, $release, $repo, $repo_type = "svn",  $repo_user = "", $repo_pass = "", $path, $adapter, $db, $pool_size, $db_user, $db_password) {
+define rails($app_name, $release, $repo, $repo_type,  $repo_user = "", $repo_pass = "", $path, $adapter, $db, $pool_size, $db_user, $db_password) {
   $app_path = "${path}/${app_name}"
 
   if !defined(Package["rails pkg dependencies"]) {

@@ -1,4 +1,4 @@
-define sinatra($app_name, $release, $repo, $repo_type = "svn", $repo_user, $repo_pass, $path) {
+define sinatra($app_name, $release, $repo, $repo_type, $repo_user, $repo_pass, $path) {
   $app_path = "${path}/${app_name}"
 
   if !defined(File[$path]) {

@@ -1,7 +1,8 @@
-class owgm($repo, $release, $path = '/var/rails', $db_password, $pool_size = '10') {
+class owgm($repo, $repo_type = "svn", $release, $path = '/var/rails', $db_password, $pool_size = '10') {
   rails { "${name} app":
       app_name => $name,
       repo => $repo,
+      repo_type => $repo_type,
       release => $release,
       path => $path,
       adapter => 'mysql',
