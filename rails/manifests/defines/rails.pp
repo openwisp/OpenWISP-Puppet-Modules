@@ -1,4 +1,4 @@
-define rails($app_name, $release, $repo, $repo_user = "", $repo_pass = "", $path, $adapter, $db, $pool_size, $db_user, $db_password) {
+define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $repo_pass = "", $path, $adapter, $db, $pool_size, $db_user, $db_password) {
   $app_path = "${path}/${app_name}"
 
   if !defined(Package["rails pkg dependencies"]) {
@@ -32,11 +32,25 @@ define rails($app_name, $release, $repo, $repo_user = "", $repo_pass = "", $path
     require => File["${app_path}/shared/log"]
   }
 
-  exec { "${app_name} initial export":
-    command => "svn export --no-auth-cache --username \"${repo_user}\" --password \"${repo_pass}\" ${repo}/tags/${release} ${app_path}/releases/${release}",
-    require => File["${app_path}/releases"],
-    unless => "test -d ${app_path}/releases/${release}",
-    notify => Exec["reload-apache2"]
+  if $repo_type == "svn" {
+   exec { "${app_name} initial export":
+     command => "svn export --no-auth-cache --username \"${repo_user}\" --password \"${repo_pass}\" ${repo}/tags/${release} ${app_path}/releases/${release}",
+     require => File["${app_path}/releases"],
+     unless => "test -d ${app_path}/releases/${release}",
+     notify => Exec["reload-apache2"]
+   }
+  } elsif $repo_type == "git" {
+    exec { "${app_name} initial export":
+     command => "git clone ${repo} ${app_path}/releases/${release} && cd ${app_path}/releases/${release} && git checkout ${release} && rm -rf .git",
+     require => File["${app_path}/releases"],
+     unless => "test -d ${app_path}/releases/${release}",
+     notify => Exec["reload-apache2"]
+   }
+   if $app_name == "owgm" {
+     exec { "${app_name} excel dir ":
+      command => "mkdir ${app_path}/releases/${release}/public/excel && chown root:www-data ${app_path}/releases/${release}/public/excel && chmod 775 ${app_path}/releases/${release}/public/excel"
+     }
+   }
   }
 
   file { "${app_path}/shared/config/database.yml":
