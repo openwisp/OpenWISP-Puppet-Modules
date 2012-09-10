@@ -1,8 +1,9 @@
-class owcpm($repo, $release, $repo_user, $repo_pass, $path = '/var/rails', $db_password, $pool_size = '10', $owmw_enabled = 'false', $owmw_url = '', $owmw_user = '', $owmw_password = '') {
+class owcpm($repo, $repo_type = "svn", $release, $repo_user, $repo_pass, $path = '/var/rails', $db_password, $pool_size = '10', $owmw_enabled = 'false', $owmw_url = '', $owmw_user = '', $owmw_password = '') {
   rails { "${name} app":
       app_name => $name,
       repo => $repo,
       release => $release,
+      repo_type => $repo_type,
       repo_user => $repo_user,
       repo_pass => $repo_pass,
       path => $path,

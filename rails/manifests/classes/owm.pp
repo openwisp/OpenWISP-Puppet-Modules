@@ -1,4 +1,4 @@
-class owm($repo, $release, $path = '/var/rails', $db_password, $pool_size = '10') {
+class owm($repo, $repo_type = "svn", $release, $path = '/var/rails', $db_password, $pool_size = '10') {
   package { "${name} dependencies":
     name   => ["libarchive-dev"],
     ensure => installed
@@ -7,6 +7,7 @@ class owm($repo, $release, $path = '/var/rails', $db_password, $pool_size = '10'
   rails { "${name} app":
       app_name => $name,
       repo => $repo,
+      repo_type => $repo_type,
       release => $release,
       path => $path,
       adapter => 'mysql',

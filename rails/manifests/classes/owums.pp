@@ -1,4 +1,4 @@
-class owums($release, $repo, $path = '/var/rails', $db_password, $pool_size = '10', $adapter = 'mysql') {
+class owums($release, $repo, $repo_type = "svn",  $path = '/var/rails', $db_password, $pool_size = '10', $adapter = 'mysql') {
   package { "${name} dependencies":
     name => ["libmagickwand-dev", "lame", "festival", "festvox-italp16k", "festvox-rablpc16k", "librsvg2-bin"],
     ensure => installed
@@ -7,6 +7,7 @@ class owums($release, $repo, $path = '/var/rails', $db_password, $pool_size = '1
   rails { "${name} app":
       app_name => $name,
       repo => $repo,
+      repo_type => $repo_type,
       release => $release,
       path => $path,
       adapter => $adapter,
