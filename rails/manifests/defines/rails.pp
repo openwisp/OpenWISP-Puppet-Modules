@@ -48,7 +48,8 @@ define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $rep
    }
    if $app_name == "owgm" {
      exec { "${app_name} excel dir ":
-      command => "mkdir ${app_path}/releases/${release}/public/excel && chown root:www-data ${app_path}/releases/${release}/public/excel && chmod 775 ${app_path}/releases/${release}/public/excel"
+      command => "mkdir ${app_path}/releases/${release}/public/excel && chown root:www-data ${app_path}/releases/${release}/public/excel && chmod 775 ${app_path}/releases/${release}/public/excel",
+      unless => "test -d ${app_path}/releases/${release}/public/excel"
      }
    }
   }
