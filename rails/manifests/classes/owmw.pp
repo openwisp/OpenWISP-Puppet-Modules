@@ -1,4 +1,4 @@
-class owmw($repo, $repo_type = "svn", $release, $repo_user, $repo_pass, $path = '/var/rails', $capistrano_enabled = true) {
+class owmw($repo, $repo_type = "svn", $release, $repo_user, $repo_pass, $path = '/var/rails', $capistrano_enabled = true, $svn2git = '0') {
   sinatra { "${name} app":
       app_name => $name,
       repo => $repo,
@@ -6,7 +6,8 @@ class owmw($repo, $repo_type = "svn", $release, $repo_user, $repo_pass, $path = 
       release => $release,
       repo_user => $repo_user,
       repo_pass => $repo_pass,
-      path => $path
+      path => $path,
+      svn2git => $svn2git
   }
 
   file { "${path}/${name}/shared/config/settings.rb":

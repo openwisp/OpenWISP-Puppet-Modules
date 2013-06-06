@@ -1,4 +1,4 @@
-define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $repo_pass = "", $path, $adapter, $db, $pool_size, $db_user, $db_password) {
+define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $repo_pass = "", $path, $adapter, $db, $pool_size, $db_user, $db_password, $svn2git ='0') {
   $app_path = "${path}/${app_name}"
 
   if !defined(Package["rails pkg dependencies"]) {
@@ -14,6 +14,18 @@ define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $rep
       mode => 0644, owner => root, group => root;
     }
   }
+   
+  if $svn2git == "1" {
+     exec { "${app_name} moving directory":
+           command => "mv ${app_path} ${app_path}_svn",
+           unless => "test -d ${app_path}_svn",
+         }
+     exec { "${app_name} backup databases":
+           command => "/opt/scripts/mysqlbackup.sh && touch /opt/.svn2git_backup_executed",
+           unless => "test -f /opt/.svn2git_backup_executed",
+         }
+  }
+      
 
   file { [ "${app_path}", "${app_path}/shared", "${app_path}/shared/config", "${app_path}/releases" ]:
     ensure => directory, recurse => false,
@@ -115,6 +127,18 @@ define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $rep
       environment => ["RAILS_ENV=production"],
       require => [ Mysql::Db["${app_name} db"], File["${app_path}/current/config/database.yml"], Exec["${app_name} bundle"] ]
     }
+    if $svn2git == "1" {
+    #Nel passaggio da svn a git sono necessarie nuovamente le migrazioni
+    #La parte precedente ( bundle exec rake db:migrate:status | grep up )
+    #che esegue le migrazioni darebbe cmq un risultato positivo e non la eseguirebbe
+     exec { "${app_name} db migrate release ${release}":
+         command => "bundle exec rake db:migrate && touch ../.migrated_by_puppet_${release} && touch ../.seeds_run_by_puppet",
+         cwd => "${app_path}/current",
+         unless => "test -f ${app_path}/releases/.migrated_by_puppet_${release}",
+         environment => ["RAILS_ENV=production"],
+         require => [ Mysql::Db["${app_name} db"], File["${app_path}/current/config/database.yml"], Exec["${app_name} bundle"] ]
+     }
+    }
   }
-
+   
 }

@@ -1,4 +1,4 @@
-define sinatra($app_name, $release, $repo, $repo_type, $repo_user, $repo_pass, $path) {
+define sinatra($app_name, $release, $repo, $repo_type, $repo_user, $repo_pass, $path, $svn2git = '0') {
   $app_path = "${path}/${app_name}"
 
   if !defined(File[$path]) {
@@ -6,6 +6,13 @@ define sinatra($app_name, $release, $repo, $repo_type, $repo_user, $repo_pass, $
       ensure => directory, recurse => false,
       mode => 0644, owner => root, group => root;
     }
+  }
+
+  if $svn2git == "1" {
+      exec { "${app_name} moving directory":
+         command => "mv ${app_path} ${app_path}_svn",
+         unless => "test -d ${app_path}_svn",
+      }
   }
 
   file { [ "${app_path}", "${app_path}/shared", "${app_path}/shared/config", "${app_path}/releases" ]:
