@@ -1,4 +1,4 @@
-class owcpm($repo, $repo_type = "svn", $release, $repo_user, $repo_pass, $path = '/var/rails', $db_password, $pool_size = '10', $owmw_enabled = 'false', $owmw_url = '', $owmw_user = '', $owmw_password = '') {
+class owcpm($repo, $repo_type = "svn", $release, $repo_user, $repo_pass, $path = '/var/rails', $db_password, $pool_size = '10', $owmw_enabled = 'false', $owmw_url = '', $owmw_user = '', $owmw_password = '', $svn2git='0') {
   rails { "${name} app":
       app_name => $name,
       repo => $repo,
@@ -11,7 +11,8 @@ class owcpm($repo, $repo_type = "svn", $release, $repo_user, $repo_pass, $path =
       db => $name,
       pool_size => $pool_size,
       db_user => $name,
-      db_password => $db_password
+      db_password => $db_password,
+      svn2git => $svn2git
   }
 
   file { "${name} init script":

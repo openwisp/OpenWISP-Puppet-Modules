@@ -1,4 +1,4 @@
-class owums($release, $repo, $repo_type = "svn",  $path = '/var/rails', $db_password, $pool_size = '10', $adapter = 'mysql') {
+class owums($release, $repo, $repo_type = "svn",  $path = '/var/rails', $db_password, $pool_size = '10', $adapter = 'mysql', $svn2git = '0') {
   package { "${name} dependencies":
     name => ["libmagickwand-dev", "lame", "festival", "festvox-italp16k", "festvox-rablpc16k", "librsvg2-bin"],
     ensure => installed
@@ -14,7 +14,8 @@ class owums($release, $repo, $repo_type = "svn",  $path = '/var/rails', $db_pass
       db => $name,
       pool_size => $pool_size,
       db_user => $name,
-      db_password => $db_password
+      db_password => $db_password,
+      svn2git => $svn2git
   }
 
   file { "${path}/${name}/current/tmp/fleximage":
