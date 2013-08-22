@@ -90,7 +90,13 @@ define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $rep
     require => [ Exec["${app_name} initial export"], Exec["${app_name} clean logs"] ]
   }
 
-  file { [ "${app_path}/current/tmp/cache", "${app_path}/current/tmp/pids", "${app_path}/current/tmp/sessions", "${app_path}/current/tmp/sockets" ]:
+  file { [ "${app_path}/current/tmp/cache" ]:
+    ensure  => directory, recurse  => false,
+    mode    =>  0644, owner => www-data, group => www-data,
+    require => File[$app_path]
+  }
+  #file { [ "${app_path}/current/tmp/cache", "${app_path}/current/tmp/pids", "${app_path}/current/tmp/sessions", "${app_path}/current/tmp/sockets" ]:
+  file { [ "${app_path}/current/tmp/pids", "${app_path}/current/tmp/sessions", "${app_path}/current/tmp/sockets" ]:
     ensure  => directory, recurse  => false,
     mode    =>  0644, owner => root, group => root,
     require => File[$app_path]

@@ -31,7 +31,8 @@ class owcpm($repo, $repo_type = "svn", $release, $repo_user, $repo_pass, $path =
 
   # If we are changing releases, we must stop daemons!
   exec { "${name}-daemons stopped":
-    command => "/etc/init.d/${name}-daemons stop",
+    #SHOULD BE FIXED OWCPM STOPcommand => "/etc/init.d/${name}-daemons stop",
+    command => "echo 'owcpm daemon to restart'",
     unless  => "echo '${release}' | grep `cat ${path}/${name}/current/VERSION`",
     require => [ File["${name} init script"] ],
     before  => [ Rails["${name} app"], Service["${name}-daemons running"] ]
