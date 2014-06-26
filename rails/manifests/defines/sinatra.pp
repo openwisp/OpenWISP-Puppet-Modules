@@ -1,4 +1,4 @@
-define sinatra($app_name, $release, $repo, $repo_type, $repo_user, $repo_pass, $path, $svn2git = '0') {
+define sinatra($app_name, $release, $repo, $repo_type, $repo_user, $repo_pass, $path, $svn2git = '0', $owmw_pull ='0') {
   $app_path = "${path}/${app_name}"
 
   if !defined(File[$path]) {
@@ -42,13 +42,21 @@ define sinatra($app_name, $release, $repo, $repo_type, $repo_user, $repo_pass, $
      }
     } elsif $repo_type == "git" {
         exec { "${app_name} initial export":
-        command => "git clone ${repo} ${app_path}/releases/${release} && cd ${app_path}/releases/${release} && git checkout ${release} && rm -rf .git",
+        command => "git clone ${repo} ${app_path}/releases/${release} && cd ${app_path}/releases/${release} && git checkout ${release}",
         require => File["${app_path}/releases"],
         unless => "test -d ${app_path}/releases/${release}",
         notify => Exec["reload-apache2"]
         }
+        if $owmw_pull  == "1" {
+           exec { "${app_name} updating owmw repo":
+           command => "git pull origin ${release} && touch ../.${app_name}_pull",
+           cwd => "${app_path}/releases/${release}",
+           require => File["${app_path}/releases"],
+           unless => "test -f ${app_path}/releases/.${app_name}_pull",
+           notify => Exec["reload-apache2"]
+           }
+       }
     }
-
   exec { "${app_name} clean logs":
     command => "rm -rf ${app_path}/releases/${release}/log",
     unless => "test -L ${app_path}/current/log",

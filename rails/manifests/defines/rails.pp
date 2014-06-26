@@ -1,4 +1,4 @@
-define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $repo_pass = "", $path, $adapter, $db, $pool_size, $db_user, $db_password, $svn2git ='0') {
+define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $repo_pass = "", $path, $adapter, $db, $pool_size, $db_user, $db_password, $svn2git ='0', $owums_pull='0', $owcpm_pull='0') {
   $app_path = "${path}/${app_name}"
 
   if !defined(Package["rails pkg dependencies"]) {
@@ -53,11 +53,29 @@ define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $rep
    }
   } elsif $repo_type == "git" {
     exec { "${app_name} initial export":
-     command => "git clone ${repo} ${app_path}/releases/${release} && cd ${app_path}/releases/${release} && git checkout ${release} && rm -rf .git",
-     require => File["${app_path}/releases"],
-     unless => "test -d ${app_path}/releases/${release}",
-     notify => Exec["reload-apache2"]
-   }
+      command => "git clone ${repo} ${app_path}/releases/${release} && cd ${app_path}/releases/${release} && git checkout ${release}",
+      require => File["${app_path}/releases"],
+      unless => "test -d ${app_path}/releases/${release}",
+      notify => Exec["reload-apache2"]
+    }
+   if $owums_pull  == "1" {
+      exec { "${app_name} updating owums repo":
+      command => "git pull origin ${release} && touch ../.${app_name}_pull && RAILS_ENV=production bundle install --deployment && RAILS_ENV=production bundle exec rake db:migrate",
+      cwd => "${app_path}/releases/${release}",
+      require => File["${app_path}/releases"],
+      unless => "test -f ${app_path}/releases/.${app_name}_pull", 
+      notify => Exec["reload-apache2"]
+      }   
+   }   
+   if $owcpm_pull  == "1" {
+      exec { "${app_name} updating owcpm repo":
+      command => "git pull origin ${release} && touch ../.${app_name}_pull",
+      cwd => "${app_path}/releases/${release}",
+      require => File["${app_path}/releases"],
+      unless => "test -f ${app_path}/releases/.${app_name}_pull", 
+      notify => Exec["reload-apache2"]
+      }   
+   }   
    if $app_name == "owgm" {
      exec { "${app_name} excel dir ":
       command => "mkdir ${app_path}/releases/${release}/public/excel && chown root:www-data ${app_path}/releases/${release}/public/excel && chmod 775 ${app_path}/releases/${release}/public/excel",
@@ -92,9 +110,14 @@ define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $rep
 
   file { [ "${app_path}/current/tmp/cache" ]:
     ensure  => directory, recurse  => false,
-    mode    =>  0644, owner => www-data, group => www-data,
+    mode    =>  0755, owner => www-data, group => www-data,
     require => File[$app_path]
   }
+  #exec { "${app_name} change owner and permission for tmp/cache/* directories":
+  #  command => "find ${app_path}/current/tmp/cache -type d -exec chmod 0755 {} \; && find ${app_path}/current/tmp/cache -type d -exec chown www-data:www-data {} \;",
+  #  require => [ Exec["${app_name} initial export"] ]
+  #}
+  
   #file { [ "${app_path}/current/tmp/cache", "${app_path}/current/tmp/pids", "${app_path}/current/tmp/sessions", "${app_path}/current/tmp/sockets" ]:
   file { [ "${app_path}/current/tmp/pids", "${app_path}/current/tmp/sessions", "${app_path}/current/tmp/sockets" ]:
     ensure  => directory, recurse  => false,
