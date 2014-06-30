@@ -49,7 +49,7 @@ define sinatra($app_name, $release, $repo, $repo_type, $repo_user, $repo_pass, $
         }
         if $owmw_pull  == "1" {
            exec { "${app_name} updating owmw repo":
-           command => "git pull origin ${release} && touch ../.${app_name}_pull",
+           command => "git pull origin ${release} && touch ../.${app_name}_pull && RAILS_ENV=production bundle install --deployment",
            cwd => "${app_path}/releases/${release}",
            require => File["${app_path}/releases"],
            unless => "test -f ${app_path}/releases/.${app_name}_pull",
