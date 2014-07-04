@@ -1,4 +1,4 @@
-define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $repo_pass = "", $path, $adapter, $db, $pool_size, $db_user, $db_password, $svn2git ='0', $owums_pull='0', $owcpm_pull='0') {
+define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $repo_pass = "", $path, $adapter, $db, $pool_size, $db_user, $db_password, $svn2git ='0', $owums_pull='0', $owcpm_pull='0', $owm_pull='0', $owgm_pull='0') {
   $app_path = "${path}/${app_name}"
 
   if !defined(Package["rails pkg dependencies"]) {
@@ -69,7 +69,25 @@ define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $rep
    }   
    if $owcpm_pull  == "1" {
       exec { "${app_name} updating owcpm repo":
-      command => "git pull origin ${release} && touch ../.${app_name}_pull",
+      command => "git pull origin ${release} && touch ../.${app_name}_pull && RAILS_ENV=production bundle install --deployment && RAILS_ENV=production bundle exec rake db:migrate",
+      cwd => "${app_path}/releases/${release}",
+      require => File["${app_path}/releases"],
+      unless => "test -f ${app_path}/releases/.${app_name}_pull", 
+      notify => Exec["reload-apache2"]
+      }   
+   }   
+   if $owm_pull  == "1" {
+      exec { "${app_name} updating owm repo":
+      command => "git pull origin ${release} && touch ../.${app_name}_pull && RAILS_ENV=production bundle install --deployment && RAILS_ENV=production bundle exec rake db:migrate",
+      cwd => "${app_path}/releases/${release}",
+      require => File["${app_path}/releases"],
+      unless => "test -f ${app_path}/releases/.${app_name}_pull", 
+      notify => Exec["reload-apache2"]
+      }   
+   }   
+   if $owgm_pull  == "1" {
+      exec { "${app_name} updating owgm repo":
+      command => "git pull origin ${release} && touch ../.${app_name}_pull && RAILS_ENV=production bundle install --deployment && RAILS_ENV=production bundle exec rake db:migrate",
       cwd => "${app_path}/releases/${release}",
       require => File["${app_path}/releases"],
       unless => "test -f ${app_path}/releases/.${app_name}_pull", 
@@ -142,7 +160,7 @@ define rails($app_name, $release, $repo, $repo_type='svn', $repo_user = "", $rep
   
   if $rvm_installed == "true" {
     exec { "${app_name} bundle":
-      command => "bundle install --deployment",
+      command => "bundle install --deployment && RAILS_ENV=production bundle exec rake db:migrate",
       cwd => "${app_path}/current",
       environment => ["RAILS_ENV=production"],
       unless => "bundle check",
