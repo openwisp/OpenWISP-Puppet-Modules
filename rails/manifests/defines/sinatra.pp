@@ -17,19 +17,19 @@ define sinatra($app_name, $release, $repo, $repo_type, $repo_user, $repo_pass, $
 
   file { [ "${app_path}", "${app_path}/shared", "${app_path}/shared/config", "${app_path}/releases" ]:
     ensure => directory, recurse => false,
-    mode => 0644, owner => root, group => root,
+    mode => 0777, owner => root, group => root,
     require => File[$path]
   }
 
   file { [ "${app_path}/shared/log" ]:
     ensure => directory, recurse => false, 
-    mode => 0664, owner => root, group => www-data,
+    mode => 0777, owner => root, group => www-data,
     require => File[$app_path]
   }
 
   file { [ "${app_path}/shared/log/sinatra.log" ]:
     ensure => present,
-    mode => 0664, owner => root, group => www-data,
+    mode => 0666, owner => root, group => www-data,
     require => File["${app_path}/shared/log"]
   }
 

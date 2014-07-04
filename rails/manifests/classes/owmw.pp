@@ -21,7 +21,7 @@ class owmw($repo, $repo_type = "svn", $release, $repo_user, $repo_pass, $path = 
                 "puppet:///modules/rails/${operatingsystem}/owmw_config.rb",
                 "puppet:///modules/rails/owmw_config.rb" ],
     require => Sinatra["${name} app"],
-    mode => 0640, owner => root, group => www-data;
+    mode => 0666, owner => root, group => www-data;
   }
 
   file { "${path}/${name}/current/config/settings.rb":
